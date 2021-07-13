@@ -1,4 +1,5 @@
 # AWX EE
+[![Docker Repository on Quay](https://quay.io/repository/josephkav/awx-ee/status "Docker Repository on Quay")](https://quay.io/repository/josephkav/awx-ee)
 
 An Ansible Execution Environment for AWX project.
 
