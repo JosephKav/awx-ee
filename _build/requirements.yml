@@ -6,7 +6,9 @@ collections:
   - name: awx.awx
   - name: azure.azcollection
   - name: community.crypto
+  - name: community.docker
   - name: community.general
+  - name: community.kubernetes
   - name: community.mysql
   - name: community.vmware
   - name: google.cloud
