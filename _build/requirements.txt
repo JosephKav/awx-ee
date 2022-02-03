@@ -1,3 +1,0 @@
-python-dateutil>=2.7.0 # from collection awx.awx
-pytz>=2021.3 # from collection awx.awx
-dnspython>=2.1.0  # from collection community.general
