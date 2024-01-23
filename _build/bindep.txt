@@ -1,6 +1,0 @@
-python38-devel [platform:rpm compile]
-python3-netaddr [platform:rpm]
-python3-passlib [platform:rpm epel]
-subversion [platform:rpm]
-subversion [platform:dpkg]
-git-lfs [platform:rpm]

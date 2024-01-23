@@ -1,15 +1,152 @@
 ---
-version: 1
+version: 3
+images:
+  base_image:
+    name: quay.io/centos/centos:stream9
 dependencies:
-  galaxy: _build/requirements.yml
-  python: _build/requirements.txt
-  system: _build/bindep.txt
+  ansible_core:
+    # Require minimum of 2.15 to get ansible-inventory --limit option
+    package_pip: ansible-core>=2.15.0rc2,<2.16
+  ansible_runner:
+    package_pip: ansible-runner
+  galaxy: |
+    ---
+    collections:
+      - name: amazon.aws
+      - name: ansible.netcommon
+      - name: ansible.posix
+      - name: ansible.security
+      - name: ansible.utils
+      - name: ansible.windows
+      - name: awx.awx
+      - name: azure.azcollection
+      - name: community.crypto
+      - name: community.docker
+      - name: community.general
+      - name: community.kubernetes
+      - name: community.mysql
+      - name: community.vmware
+      - name: google.cloud
+      - name: kubernetes.core
+      - name: openstack.cloud
+      - name: ovirt.ovirt
+      - name: redhatinsights.insights
+      - name: theforeman.foreman
+  system: |
+    git-core [platform:rpm]
+    python3.9-devel [platform:rpm compile]
+    python3-netaddr [platform:rpm]
+    python3-passlib [platform:rpm epel]
+    libcurl-devel [platform:rpm compile]
+    krb5-devel [platform:rpm compile]
+    krb5-workstation [platform:rpm]
+    subversion [platform:rpm]
+    subversion [platform:dpkg]
+    git-lfs [platform:rpm]
+    sshpass [platform:rpm]
+    rsync [platform:rpm]
+    epel-release [platform:rpm]
+    python-unversioned-command [platform:rpm]
+    unzip [platform:rpm]
+    podman-remote [platform:rpm]
+  python: |
+    git+https://github.com/ansible/ansible-sign
+    ncclient
+    paramiko
+    pykerberos
+    pyOpenSSL
+    pypsrp[kerberos,credssp]
+    pywinrm[kerberos,credssp]
+    toml
+    pexpect>=4.5
+    python-daemon
+    pyyaml
+    six
+    receptorctl
+    ###############################################
+    requests
+    ###############################################
+    # amazon.aws collection
+    boto3
+    botocore
+    ###############################################
+    # azure.azcollection collection
+    packaging
+    requests[security]
+    xmltodict
+    msgraph-sdk
+    azure-cli-core
+    azure-common
+    azure-identity
+    azure-mgmt-authorization
+    azure-mgmt-apimanagement
+    azure-mgmt-batch
+    azure-mgmt-cdn
+    azure-mgmt-compute
+    azure-mgmt-containerinstance
+    azure-mgmt-core
+    azure-mgmt-containerregistry
+    azure-containerregistry
+    azure-mgmt-containerservice
+    azure-mgmt-datalake-store
+    azure-mgmt-datafactory
+    azure-mgmt-dns
+    azure-mgmt-marketplaceordering
+    azure-mgmt-monitor
+    azure-mgmt-managedservices
+    azure-mgmt-managementgroups
+    azure-mgmt-network
+    azure-mgmt-nspkg
+    azure-mgmt-privatedns
+    azure-mgmt-redis
+    azure-mgmt-resource
+    azure-mgmt-rdbms
+    azure-mgmt-search
+    azure-mgmt-servicebus
+    azure-mgmt-sql
+    azure-mgmt-storage
+    azure-mgmt-trafficmanager
+    azure-mgmt-web
+    azure-nspkg
+    azure-storage-blob
+    azure-core
+    azure-keyvault
+    azure-mgmt-keyvault
+    azure-mgmt-cosmosdb
+    azure-mgmt-hdinsight
+    azure-mgmt-devtestlabs
+    azure-mgmt-loganalytics
+    azure-mgmt-automation
+    azure-mgmt-iothub
+    azure-iot-hub
+    azure-mgmt-recoveryservices
+    azure-mgmt-recoveryservicesbackup
+    azure-mgmt-notificationhubs
+    azure-mgmt-eventhub
+    ###############################################
+    # community.general.dig
+    dnspython
+    ###############################################
+    # google.cloud collection
+    google-auth
+    google-cloud-storage
+    google-api-python-client
+    ###############################################
+    # kubernetes.core collection
+    kubernetes
+    openshift
+    requests-oauthlib
+    jsonpatch
+    ###############################################
+    # ipaddr filter
+    netaddr
+    ###############################################
+    # password_hash filter
+    passlib
 additional_build_steps:
-  append:
-    - RUN alternatives --set python /usr/bin/python3
+  append_base:
+    - RUN $PYCMD -m pip install -U pip
+  append_final:
     - COPY --from=quay.io/ansible/receptor:devel /usr/bin/receptor /usr/bin/receptor
     - RUN mkdir -p /var/run/receptor
-    - ADD run.sh /run.sh
-    - CMD /run.sh
-    - USER 1000
-    - RUN git lfs install
+    - RUN git lfs install --system
