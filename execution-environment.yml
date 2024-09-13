@@ -4,6 +4,9 @@ images:
   base_image:
     name: quay.io/centos/centos:stream9
 dependencies:
+  python_interpreter:
+    package_system: python3.11
+    python_path: /usr/bin/python3.11
   ansible_core:
     # Require minimum of 2.15 to get ansible-inventory --limit option
     package_pip: ansible-core>=2.15.0rc2,<2.16
@@ -20,6 +23,7 @@ dependencies:
       - name: ansible.windows
       - name: awx.awx
       - name: azure.azcollection
+        version: ">=2.1.0"
       - name: community.crypto
       - name: community.docker
       - name: community.general
@@ -28,13 +32,14 @@ dependencies:
       - name: community.vmware
       - name: google.cloud
       - name: kubernetes.core
+      - name: kubevirt.core
       - name: openstack.cloud
       - name: ovirt.ovirt
       - name: redhatinsights.insights
       - name: theforeman.foreman
   system: |
     git-core [platform:rpm]
-    python3.9-devel [platform:rpm compile]
+    python3.11-devel [platform:rpm compile]
     python3-netaddr [platform:rpm]
     python3-passlib [platform:rpm epel]
     libcurl-devel [platform:rpm compile]
@@ -46,9 +51,13 @@ dependencies:
     sshpass [platform:rpm]
     rsync [platform:rpm]
     epel-release [platform:rpm]
-    python-unversioned-command [platform:rpm]
     unzip [platform:rpm]
     podman-remote [platform:rpm]
+    cmake [platform:rpm compile]
+    gcc [platform:rpm compile]
+    gcc-c++ [platform:rpm compile]
+    make [platform:rpm compile]
+    openssl-devel [platform:rpm compile]
   python: |
     git+https://github.com/ansible/ansible-sign
     ncclient
@@ -150,3 +159,5 @@ additional_build_steps:
     - COPY --from=quay.io/ansible/receptor:devel /usr/bin/receptor /usr/bin/receptor
     - RUN mkdir -p /var/run/receptor
     - RUN git lfs install --system
+    # SymLink `python` -> `python3.11`
+    - RUN alternatives --install /usr/bin/python python /usr/bin/python3.11 311
