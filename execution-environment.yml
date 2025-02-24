@@ -29,6 +29,7 @@ dependencies:
       - name: community.general
       - name: community.kubernetes
       - name: community.mysql
+      - name: community.postgresql
       - name: community.vmware
       - name: google.cloud
       - name: kubernetes.core
