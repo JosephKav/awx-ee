@@ -2,14 +2,14 @@
 version: 3
 images:
   base_image:
-    name: quay.io/centos/centos:stream9
+    name: quay.io/centos/centos:stream10
 dependencies:
   python_interpreter:
-    package_system: python3.11
-    python_path: /usr/bin/python3.11
+    package_system: python3.12
+    python_path: /usr/bin/python3.12
   ansible_core:
     # Require minimum of 2.15 to get ansible-inventory --limit option
-    package_pip: ansible-core>=2.15.0rc2,<2.16
+    package_pip: ansible-core>=2.18.7
   ansible_runner:
     package_pip: ansible-runner
   galaxy: |
@@ -23,7 +23,6 @@ dependencies:
       - name: ansible.windows
       - name: awx.awx
       - name: azure.azcollection
-        version: ">=2.1.0"
       - name: community.crypto
       - name: community.docker
       - name: community.general
@@ -40,7 +39,7 @@ dependencies:
       - name: theforeman.foreman
   system: |
     git-core [platform:rpm]
-    python3.11-devel [platform:rpm compile]
+    python3.12-devel [platform:rpm compile]
     python3-netaddr [platform:rpm]
     python3-passlib [platform:rpm epel]
     libcurl-devel [platform:rpm compile]
@@ -160,5 +159,5 @@ additional_build_steps:
     - COPY --from=quay.io/ansible/receptor:devel /usr/bin/receptor /usr/bin/receptor
     - RUN mkdir -p /var/run/receptor
     - RUN git lfs install --system
-    # SymLink `python` -> `python3.11`
-    - RUN alternatives --install /usr/bin/python python /usr/bin/python3.11 311
+    # SymLink `python` -> `python3.12`
+    - RUN alternatives --install /usr/bin/python python /usr/bin/python3.12 311
